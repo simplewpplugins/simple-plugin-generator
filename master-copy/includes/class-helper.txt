@@ -1,0 +1,25 @@
+<?php 
+namespace [{(plugin_namespace)}];
+
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+if( ! class_exists('[{(plugin_namespace)}]\Helper')){
+
+	
+	/**
+	* Class Helper
+	* @package [{(plugin_namespace)}]
+	* includes common items
+	* @access [{(plugin_init_function)}]()->helper()->method_name();
+	*/
+
+	class Helper {
+
+
+		
+
+
+
+	}
+
+}

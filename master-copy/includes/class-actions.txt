@@ -1,0 +1,67 @@
+<?php 
+namespace [{(plugin_namespace)}];
+
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+if( ! class_exists('[{(plugin_namespace)}]\Actions')){
+
+	/**
+	* Class Actions
+	* @package [{(plugin_namespace)}]
+	*/
+
+	class Actions {
+
+
+		/**
+		 * Action constructor.
+		*/
+
+		function __construct(){
+
+			add_action( 'plugins_loaded', array( $this, 'plugin_i18n' ) );
+
+			register_activation_hook( [{(constant_prefix)}]_PLUGIN, array( $this, 'activation_hook' ) );
+
+			register_deactivation_hook( [{(constant_prefix)}]_PLUGIN, array( $this, 'deactivation_hook' ) );
+
+		}
+		
+		/**
+		 * Load plugin textdomain
+		*/
+
+		function plugin_i18n(){
+
+			load_plugin_textdomain('[{(textdomain)}]', false, dirname( plugin_basename( [{(constant_prefix)}]_PLUGIN ) ).'/languages/');
+
+		}
+
+
+
+		/**
+		 * trigger some action on plugin activation
+		*/
+
+		function activation_hook(){
+
+			/* Add default options */
+			do_action( '[{(plugin_namespace)}]_activation' );
+		}
+
+
+
+		/**
+		 * trigger some action on plugin deactivation
+		*/
+
+		function deactivation_hook(){
+
+			do_action( '[{(plugin_namespace)}]_deactivation' );
+		}
+
+
+
+	}
+
+}

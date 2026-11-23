@@ -1,0 +1,90 @@
+<?php 
+namespace [{(plugin_namespace)}];
+
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+if( ! class_exists('[{(plugin_namespace)}]\Enqueue')){
+
+	/**
+	* Class Enqueue
+	* @package [{(plugin_namespace)}]
+	*/
+
+	class Enqueue {
+
+
+		/**
+		 * @var string
+		 */
+		var $suffix = '';
+
+
+		
+		/**
+		 * Enqueue constructor.
+		*/
+
+		function __construct(){
+
+			$this->suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
+
+			add_action( 'wp_enqueue_scripts', array( $this, 'frontend_assets' ) );
+
+			add_action( 'admin_enqueue_scripts', array( $this, 'admin_assets' ) );
+
+		}
+
+
+		/**
+		 * Enqueue plugin css & js
+		*/
+
+		function frontend_assets(){
+
+			wp_enqueue_style( '[{(plugin_slug)}]_styles', [{(constant_prefix)}]_URL.'assets/css/[{(plugin_slug)}]'.$this->get_asset_sufix().'.css' );
+
+			wp_enqueue_script( 'jquery' );
+
+			wp_enqueue_script( '[{(plugin_slug)}]_scripts', [{(constant_prefix)}]_URL.'assets/js/[{(plugin_slug)}]'.$this->get_asset_sufix().'.js', array( 'jquery' ),'1.0',true );
+            
+            /*
+			wp_register_script( '[{(plugin_slug)}]_ajax_scripts', [{(constant_prefix)}]_URL.'assets/js/[{(plugin_slug)}]-ajax'.$this->get_asset_sufix().'.js', array( 'jquery' ),'1.0',true );
+
+			wp_localize_script( '[{(plugin_slug)}]_ajax_scripts', '[{(method_prefix)}]_ajax_data', array(
+				'ajax_url' => admin_url('admin-ajax.php')
+			) );
+
+			wp_enqueue_script( '[{(plugin_slug)}]_ajax_scripts' );
+            */
+
+		}
+
+		
+		/**
+		 * Enqueue css and js for admin area.
+		*/
+
+
+		function admin_assets(){
+			wp_enqueue_style( '[{(plugin_slug)}]_admin_styles', [{(constant_prefix)}]_URL.'assets/css/[{(plugin_slug)}]-admin-style'.$this->get_asset_sufix().'.css' );
+			wp_enqueue_script( 'jquery' );
+			
+			wp_enqueue_script( '[{(plugin_slug)}]_main_scripts', [{(constant_prefix)}]_URL.'assets/js/[{(plugin_slug)}]-admin-script'.$this->get_asset_sufix().'.js', array( 'jquery' ),'1.0',true );
+
+		}
+
+
+		/**
+		 * @return string
+		 */
+
+		function get_asset_sufix(){
+			return '';
+			return $this->suffix;
+		}
+
+
+
+	}
+
+}

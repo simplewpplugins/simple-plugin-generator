@@ -1,0 +1,30 @@
+<?php 
+namespace [{(plugin_namespace)}];
+
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+if( ! class_exists('[{(plugin_namespace)}]\Shortcode')){
+
+	/**
+	* Class Shortcode
+	* @package [{(plugin_namespace)}]
+	*/
+
+	class Shortcode {
+
+
+		/**
+		 * Shortcode constructor.
+		*/
+
+		function __construct(){
+
+
+
+		}
+
+
+
+	}
+
+}

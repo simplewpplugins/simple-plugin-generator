@@ -1,0 +1,229 @@
+<?php 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+if( ! class_exists('[{(plugin_main_class)}]')){
+
+    class [{(plugin_main_class)}] {
+
+        static protected $instance = null;
+
+        public $classes = [];
+
+	/**
+	* Autoload classes handler
+	*
+	* @since 1.0
+	*
+	* @param $class
+	*/
+
+        public static function autoload( $class_name ){
+
+            $class_name = str_replace( '[{(plugin_namespace)}]','includes', $class_name );
+            $class_name = str_replace( '\\','/', $class_name );
+            $array = explode( '/', strtolower( $class_name ) );
+            $class_file_name = 'class-'. end( $array ).'.php';
+            $array[ count( $array ) - 1 ] = strtolower($class_file_name);
+            $class_name = implode('/',$array);
+
+            if( file_exists( [{(constant_prefix)}]_PATH.$class_name ) ){
+                require [{(constant_prefix)}]_PATH.$class_name;
+            }
+
+        }
+
+
+	/**
+	 * Main [{(plugin_main_class)}] Instance
+	 *
+	 * Ensures only one instance of [{(plugin_main_class)}] is loaded or can be loaded.
+	 *
+	* @since 1.1
+	* @static
+	* @see [{(plugin_init_function)}]()
+	* @return [{(plugin_main_class)}] - Main instance
+	*/
+
+        public static function instance(){
+
+            if( is_null( self::$instance ) ){
+                self::$instance = new self();
+            }
+
+            return self::$instance;
+
+        }
+
+
+	/**
+	* [{(plugin_main_class)}] Constructor
+	* Calls includes methods
+	* @return void
+	*/
+
+        function __construct(){
+            $this->includes();
+        }
+
+
+
+	/**
+	* Include required core files.
+	* @return void
+	*/
+        function includes(){
+
+            $this->enqueue();
+            $this->shortcode();
+            $this->actions();
+	        $this->helper();
+	        $this->admin();
+
+        }
+
+
+	/*
+		* @return [{(plugin_namespace)}]\Enqueue()
+	*/
+
+
+        function enqueue(){
+
+            if( empty($this->classes['enqueue'])){
+
+                $this->classes['enqueue'] = new [{(plugin_namespace)}]\Enqueue();
+
+            }
+
+            return $this->classes['enqueue'];
+        }
+
+
+	/*
+		* @return [{(plugin_namespace)}]\Shortcode()
+	*/
+
+
+        function shortcode(){
+
+            if( empty($this->classes['shortcode'])){
+
+                $this->classes['shortcode'] = new [{(plugin_namespace)}]\Shortcode();
+            }
+
+            return $this->classes['shortcode'];
+        }
+
+
+	/*
+		* @return [{(plugin_namespace)}]\admin\Admin()
+	*/
+
+
+        function admin(){
+
+            if( empty($this->classes['admin'])){
+
+                $this->classes['admin'] = new [{(plugin_namespace)}]\admin\Admin();
+
+            }
+
+            return $this->classes['admin'];
+        }
+
+
+
+	/*
+		* @return [{(plugin_namespace)}]\Action()
+	*/
+
+
+	function actions(){
+
+            if( empty($this->classes['action'])){
+
+                $this->classes['actions'] = new [{(plugin_namespace)}]\Actions();
+
+            }
+
+            return $this->classes['actions'];
+        }
+
+
+
+	/*
+		* @return [{(plugin_namespace)}]\Helper()
+	*/
+
+	function helper(){
+
+            if( empty($this->classes['helper'])){
+
+                $this->classes['helper'] = new [{(plugin_namespace)}]\Helper();
+
+            }
+
+            return $this->classes['helper'];
+        }
+
+	
+	/*
+	 * include template file
+         * @param $template (file name) eg: get_template_part ( 'admin/metabox',['post_id' => $post_id ])
+         * @param $args (array) eg: ['id' => $id ]
+	*/
+
+
+        function get_template_part( $template , $args = [] ){
+
+
+            if( ! empty( $args ) ){
+
+                extract( $args );
+            }
+
+            $path = trailingslashit( get_stylesheet_directory() ).'[{(plugin_slug)}]/'.$template.'.php';
+
+            if( ! file_exists($path)){
+
+                $path = [{(constant_prefix)}]_PATH.'templates/'.$template.'.php';
+
+            }
+
+            $path = apply_filters( '[{(constant_prefix)}]_template',$path, $template );
+
+            include $path;
+
+        }
+
+
+
+
+    }
+
+}
+
+
+ /*
+ 	* @calls [{(plugin_main_class)}]::autoload()
+	* Autoload class files
+ */
+
+spl_autoload_register( array( '[{(plugin_main_class)}]','autoload' ) );
+
+
+  /*
+ 	*@return [{(plugin_main_class)}] instance 
+ */
+
+if( ! function_exists('[{(plugin_init_function)}]')){
+
+    function [{(plugin_init_function)}](){
+
+        return [{(plugin_main_class)}]::instance();
+
+    }
+
+}
+
+[{(plugin_init_function)}]();
